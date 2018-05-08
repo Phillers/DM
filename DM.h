@@ -22,7 +22,6 @@
 #define DM_WAIT 4
 #define DM_NOTIFY 5
 #define DM_NOTIFY_ALL 6
-#define DM_WAKE 7
 
 class SharedMemory{
 public:
@@ -34,6 +33,19 @@ public:
 class DM {
 public:
     typedef int conditionVariable;
+    void addHost(std::string addr);
+    void enter();
+    void leave();
+    conditionVariable createNewConditionVariable();
+    void wait(conditionVariable condVar);
+    void wait();
+    void notify();
+    void notify(conditionVariable condVar);
+    void notify_all();
+    void notify_all(conditionVariable condVar);
+    DM(int id, SharedMemory* sharedMemory, int port, std::vector<std::string> addr);
+    ~DM();
+
 private:
     struct dm_message{
         char command;
@@ -65,8 +77,6 @@ private:
         int permissionCount=0;
         void resolve(DM* dm);
         int nextVar=0;
-        int wakeCount=0;
-
     public:
         void doReceive(std::vector<std::string> addr, DM* dm);
         void waitForEnter(DM* dm);
@@ -78,37 +88,13 @@ private:
         ~Receiver();
     }receiver;
 
-public:
-
-    void addHost(std::string addr);
-
-    void enter();
-    void leave();
-    conditionVariable createNewConditionVariable();
-    void wait(conditionVariable condVar);
-    void wait();
-    void notify();
-    void notify(conditionVariable condVar);
-    void notify_all();
-    void notify_all(conditionVariable condVar);
-
-
-    DM(int id, SharedMemory* sharedMemory, int port, std::vector<std::string> addr);
-
-    ~DM();
-private:
     void startSender(std::string port);
     void listen(std::vector<std::string> addr);
     int inMonitor;
     std::thread* listener,*sender;
     conditionVariable waitingFor;
-
     int id;
-
-
-
     SharedMemory* sharedMemory;
-
 };
 
 
