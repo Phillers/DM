@@ -41,17 +41,29 @@ WAŻNE: W każdym węźle zmienne warunkowe muszą być tworzone w tej samej kol
 Przykład dla procesu producenta:
 
 void producent(DM* dm, SharedBuffer* sharedBuffer){
+
     DM::conditionVariable somethingIn = dm->createNewConditionVariable();
+    
     DM::conditionVariable placeForNew = dm->createNewConditionVariable();
+    
     int val=0;
+    
     while(1){
+    
         sleep(3);
+        
         dm->enter();
+        
         while(sharedBuffer->place()==0)dm->wait(placeForNew);
+        
         sharedBuffer->put(val);
+        
         std::cout<<"Put value "<<val++<<std::endl;
+        
         dm->notify(somethingIn);
+        
         dm->leave();
+        
     }}
     
     w pliku main.cpp znajduje się rozwiązanie prostego problemu producenta-konsumenta. 
