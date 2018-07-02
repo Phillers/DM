@@ -5,6 +5,7 @@ Wymagane też dolinkowanie zeroMQ (-lzmq) oraz pthread (-pthread), obecność na
 oraz wykorzystanie standardu C++11 (-std=c++11). (przykład w Makefile)
 
 Główną częśćią monitora jest klasa DM, o następujących metodach publicznych:
+
     void addHost(std::string addr);
     void enter();
     void leave();
@@ -21,12 +22,14 @@ Główną częśćią monitora jest klasa DM, o następujących metodach publicz
  W celu utworzenia monitora, należy wywołać jego konstruktor o następujących parametrach:
  - int id - identyfikator węzła, w każdym monitorze z systemu powinien być inny
  - SharedMemory* sharedMemory - wskaźnik na pamięć współdzieloną, dziedziczącą po następującej klasie: 
-    class SharedMemory{
-    public:
-    int size;//liczba bajtów, które mają być współdzielone, 
-    virtual void serialize(char*)=0;//metoda, która zapisuje size bajtów w adresie wskazanym przez parametr,
-    virtual void deserialize(char*)=0;//metoda oczytuje size bajtów z wskazanego adresu, uaktualniając lokalny stan
+
+       class SharedMemory{
+        public:
+        int size;//liczba bajtów, które mają być współdzielone, 
+        virtual void serialize(char*)=0;//metoda, która zapisuje size bajtów w adresie wskazanym przez parametr,
+        virtual void deserialize(char*)=0;//metoda oczytuje size bajtów z wskazanego adresu, uaktualniając lokalny stan
     };
+
 - int port - port pod którym dany węzeł będzie wysyłać wiadomości (będzie on z nim powiązany funkcją bind)
 - std::vector<std::string> addr - lista adresów pod którymi będą wszystkie węzły systemu (łącznie z własnym), w formacie dla zmq: 
   tcp://adres:port
